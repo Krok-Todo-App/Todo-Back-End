@@ -29,7 +29,7 @@ namespace taskAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ToDoContext>(options =>
-                options.UseSqlServer(Environment.GetEnvironmentVariable("API_CONNECTION"), builder =>
+                options.UseNpgsql(Configuration.GetConnectionString("ToDoTaskContext"), builder =>
                     builder.EnableRetryOnFailure()));
 
             services.AddControllers();
