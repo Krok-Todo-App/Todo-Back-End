@@ -46,6 +46,19 @@ namespace taskAPI.Controllers
             return Ok(task);
         }
 
+
+        [HttpPost("update")]
+        public async Task<ActionResult<ToDoTask>> Update([FromBody] ToDoTask task)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Entry(task).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return Ok(task);
+            }
+            return ValidationProblem();
+        }
+
         [HttpPost("post")]
         public async Task<ActionResult<ToDoTask>> Post([FromBody] ToDoTask task)
         {
