@@ -48,7 +48,7 @@ namespace taskAPI.Controllers
 
 
         [HttpPut]
-        public async Task<ActionResult<ToDoTask>> Update([FromBody] ToDoTask task)
+        public async Task<ActionResult<ToDoTask>> Put([FromBody] ToDoTask task)
         {
             if (ModelState.IsValid)
             {

@@ -30,7 +30,7 @@ namespace taskAPI.Helpers
                 if (task.Status == "done" || task.DueDate == null)
                 {
                     output.Add(task);
-                    break;
+                    continue;
                 }
 
                 if (IsTaskExipred(task.DueDate.Value))
