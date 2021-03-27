@@ -10,7 +10,7 @@
 5. Change connection strings in appsetting.json and appsetting.Development.json files to match you configuration
 6. Publish the app via `dotnet publish -c Release -o 'Your output folder path'`
 
-> You are is now ready, but it needs to be configured with nginx web-server
+> Your app is now ready, but it needs to be configured with nginx web-server
 You can refer to [this](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/linux-nginx?view=aspnetcore-5.0) article, but short instructions are listed below:
 
 1. To configure Nginx as a reverse proxy to forward HTTP requests to your ASP.NET Core app, modify /etc/nginx/sites-available/default. Open it in a text editor, and replace the contents with the following snippet:
