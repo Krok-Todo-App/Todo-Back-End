@@ -9,16 +9,16 @@ namespace taskAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ToDoTaskController : ControllerBase
+    public class TasksController : ControllerBase
     {
         private readonly ToDoContext _context;
-        public ToDoTaskController(ToDoContext context)
+        public TasksController(ToDoContext context)
         {
             _context = context;
         }
 
-        //GET api/todotask/get
-        [HttpGet("get")]
+        //GET api/tasks/
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<ToDoTask>>> Get()
         {
 
@@ -32,7 +32,7 @@ namespace taskAPI.Controllers
             return Ok(allTasks);
         }
 
-        [HttpGet("get/{id:int}")]
+        [HttpGet("{id:int}")]
         public async Task<ActionResult<IEnumerable<ToDoTask>>> Get(int id)
         {
 
@@ -47,7 +47,7 @@ namespace taskAPI.Controllers
         }
 
 
-        [HttpPost("update")]
+        [HttpPut]
         public async Task<ActionResult<ToDoTask>> Update([FromBody] ToDoTask task)
         {
             if (ModelState.IsValid)
@@ -59,7 +59,7 @@ namespace taskAPI.Controllers
             return ValidationProblem();
         }
 
-        [HttpPost("post")]
+        [HttpPost]
         public async Task<ActionResult<ToDoTask>> Post([FromBody] ToDoTask task)
         {
             if (ModelState.IsValid)
@@ -72,7 +72,7 @@ namespace taskAPI.Controllers
             return ValidationProblem();
         }
 
-        [HttpDelete("delete")]
+        [HttpDelete]
         public async Task<ActionResult> Delete([FromBody] ToDoTask task)
         {
             if (task != null)
@@ -84,7 +84,7 @@ namespace taskAPI.Controllers
             return ValidationProblem();
         }
 
-        [HttpDelete("delete/{id:int}")]
+        [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {
             var task = await _context.Tasks.FindAsync(id);
@@ -98,7 +98,7 @@ namespace taskAPI.Controllers
             return Ok();
         }
 
-        //GET api/todotask/test
+        //GET api/tasks/test
         [HttpGet("test")]
         public ActionResult Test()
         {
