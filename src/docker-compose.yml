@@ -1,0 +1,30 @@
+# Please refer https://aka.ms/HTTPSinContainer on how to setup an https developer certificate for your ASP .NET Core service.
+
+version: '3.4'
+
+services:
+  taskapi:
+    container_name: todoTaskApi
+    image: taskapi
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 5000
+  
+  postgres:
+    container_name: todoPostgres
+    image: postgres:12.4
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=todoAPI
+      - POSTGRES_PASSWORD=5koNorJ7WVqprgESuS
+    command: ["-c", "shared_buffers=512MB", "-c", "max_connections=500"]
+    volumes:
+      - host_volume:/var/lib/postgresql/data
+        
+volumes:
+  host_volume:
+    name: todotask_postgres_volume
