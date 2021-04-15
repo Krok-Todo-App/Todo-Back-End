@@ -5,12 +5,14 @@ version: '3.4'
 services:
   taskapi:
     container_name: todoTaskApi
+    depends_on:
+      - postgres
     image: taskapi
     build:
       context: .
       dockerfile: ./Dockerfile
     ports:
-      - 5000
+      - 5000:5000
   
   postgres:
     container_name: todoPostgres
