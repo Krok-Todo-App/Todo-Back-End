@@ -15,7 +15,7 @@ namespace taskAPI.Model
         public int Id {get;init;}
 
         [MaxLength(100)]
-        public string Status {get;set;}
+        public bool completed {get;set;} = false;
         [Required, MaxLength(300)]
         public string TaskName{get;set;}
         public string TaskDescription{get;set;}

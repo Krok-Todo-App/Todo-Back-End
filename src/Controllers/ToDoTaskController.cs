@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using taskAPI.Model;
 using Microsoft.EntityFrameworkCore;
-using taskAPI.Helpers;
+using System;
 
 namespace taskAPI.Controllers
 {
@@ -27,21 +27,17 @@ namespace taskAPI.Controllers
             if (allTasks == null || allTasks.Count == 0)
                 return NotFound();
 
-            allTasks = StatusHelper.ValidateStatus(allTasks);
-
             return Ok(allTasks);
         }
 
-        [HttpGet("{id:int}")]
-        public async Task<ActionResult<IEnumerable<ToDoTask>>> Get(int id)
+        [HttpGet("{id:guid}")]
+        public async Task<ActionResult<IEnumerable<ToDoTask>>> Get(Guid id)
         {
 
             var task = await _context.Tasks.FindAsync(id);
 
             if (task == null)
                 return NotFound(id);
-
-            task = StatusHelper.ValidateStatus(task);
 
             return Ok(task);
         }
@@ -56,7 +52,7 @@ namespace taskAPI.Controllers
                 await _context.SaveChangesAsync();
                 return Ok(task);
             }
-            return ValidationProblem();
+            return BadRequest(ModelState);
         }
 
         [HttpPost]
@@ -64,12 +60,11 @@ namespace taskAPI.Controllers
         {
             if (ModelState.IsValid)
             {
-                task.Status = "active";
                 await _context.Tasks.AddAsync(task);
                 await _context.SaveChangesAsync();
                 return Ok(task);
             }
-            return ValidationProblem();
+            return BadRequest(ModelState);
         }
 
         [HttpDelete]
@@ -81,11 +76,11 @@ namespace taskAPI.Controllers
                 await _context.SaveChangesAsync();
                 return Ok();
             }
-            return ValidationProblem();
+            return BadRequest(ModelState);
         }
 
-        [HttpDelete("{id:int}")]
-        public async Task<ActionResult> Delete(int id)
+        [HttpDelete("{id:guid}")]
+        public async Task<ActionResult> Delete(Guid id)
         {
             var task = await _context.Tasks.FindAsync(id);
 
@@ -102,7 +97,7 @@ namespace taskAPI.Controllers
         [HttpGet("test")]
         public ActionResult Test()
         {
-            return Ok("shit works");
+            return Ok("works");
         }
     }
 }
