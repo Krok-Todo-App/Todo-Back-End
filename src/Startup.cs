@@ -29,6 +29,17 @@ namespace taskAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: "allowCORS",
+                              builder =>
+                              {
+                                  builder.AllowAnyOrigin()
+                                         .AllowAnyHeader()
+                                         .AllowAnyMethod();
+                              });
+            });
+
             services.AddDbContext<ToDoContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("ToDoTaskContext"), builder =>
                     builder.EnableRetryOnFailure()));
@@ -60,8 +71,9 @@ namespace taskAPI
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "taskAPI v1"));
 
-
             app.UseHttpsRedirection();
+
+            app.UseCors("allowCORS");
 
             app.UseRouting();
 
