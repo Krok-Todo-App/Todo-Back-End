@@ -13,12 +13,12 @@ namespace taskAPI.Model
 
         [Key]
         public int Id {get;init;}
-
-        [MaxLength(100)]
         public bool completed {get;set;} = false;
+
         [Required, MaxLength(300)]
         public string TaskName{get;set;}
         public string TaskDescription{get;set;}
+        
         [Required]
         public DateTime CreateDate {get;set;}
         public DateTime? DueDate {get;set;}
