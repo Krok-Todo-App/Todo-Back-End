@@ -19,8 +19,7 @@ namespace taskAPI.Model
         public string TaskName{get;set;}
         public string TaskDescription{get;set;}
         
-        [Required]
-        public DateTime CreateDate {get;set;}
+        public DateTime? StartDate {get;set;}
         public DateTime? DueDate {get;set;}
     }
 }
