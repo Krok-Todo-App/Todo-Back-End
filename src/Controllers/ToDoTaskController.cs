@@ -30,8 +30,8 @@ namespace taskAPI.Controllers
             return Ok(allTasks);
         }
 
-        [HttpGet("{id:guid}")]
-        public async Task<ActionResult<IEnumerable<ToDoTask>>> Get(Guid id)
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<IEnumerable<ToDoTask>>> Get(int id)
         {
 
             var task = await _context.Tasks.FindAsync(id);
@@ -46,41 +46,29 @@ namespace taskAPI.Controllers
         [HttpPut]
         public async Task<ActionResult<ToDoTask>> Put([FromBody] ToDoTask task)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Entry(task).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
-                return Ok(task);
-            }
-            return BadRequest(ModelState);
+            _context.Entry(task).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return Ok(task);
         }
 
         [HttpPost]
         public async Task<ActionResult<ToDoTask>> Post([FromBody] ToDoTask task)
         {
-            if (ModelState.IsValid)
-            {
-                await _context.Tasks.AddAsync(task);
-                await _context.SaveChangesAsync();
-                return Ok(task);
-            }
-            return BadRequest(ModelState);
+            await _context.Tasks.AddAsync(task);
+            await _context.SaveChangesAsync();
+            return Ok(task);
         }
 
         [HttpDelete]
         public async Task<ActionResult> Delete([FromBody] ToDoTask task)
         {
-            if (task != null)
-            {
-                _context.Tasks.Remove(task);
-                await _context.SaveChangesAsync();
-                return Ok();
-            }
-            return BadRequest(ModelState);
+            _context.Tasks.Remove(task);
+            await _context.SaveChangesAsync();
+            return Ok();
         }
 
-        [HttpDelete("{id:guid}")]
-        public async Task<ActionResult> Delete(Guid id)
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> Delete(int id)
         {
             var task = await _context.Tasks.FindAsync(id);
 
