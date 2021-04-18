@@ -40,9 +40,12 @@ namespace taskAPI
                               });
             });
 
+
             services.AddDbContext<ToDoContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("ToDoTaskContext"), builder =>
-                    builder.EnableRetryOnFailure()));
+                    builder.EnableRetryOnFailure()
+                        .MigrationsAssembly("taskAPI")
+                        .MigrationsHistoryTable("__MigrationHistory", ToDoContext.SchemaName)));
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

@@ -1,11 +1,14 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using taskAPI.Model;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 
 namespace taskAPI
 {
@@ -13,14 +16,24 @@ namespace taskAPI
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+            using (IServiceScope scope = host.Services.CreateScope())
+            {
+                IServiceProvider provider = scope.ServiceProvider;
+                ToDoContext context = provider.GetRequiredService<ToDoContext>();
+
+                if (context.Database.GetPendingMigrations().Any())
+                    context.Database.Migrate();
+            }
+            host.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
+                .ConfigureAppConfiguration((context, builder) =>
                 {
-                    webBuilder.UseStartup<Startup>();
-                });
+                    var env = context.HostingEnvironment.EnvironmentName;
+                })
+                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
     }
 }

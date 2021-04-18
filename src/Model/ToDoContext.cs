@@ -6,6 +6,7 @@ namespace taskAPI.Model
 {
     public class ToDoContext : DbContext
     {
+        public const string SchemaName = "public";
         public ToDoContext(DbContextOptions<ToDoContext> options): base(options){}
         public DbSet<ToDoTask> Tasks { get; set; }
     }
