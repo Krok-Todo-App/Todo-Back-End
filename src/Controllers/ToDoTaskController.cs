@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using taskAPI.Model;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace taskAPI.Controllers
 {
@@ -21,7 +22,9 @@ namespace taskAPI.Controllers
         public async Task<ActionResult<IEnumerable<ToDoTask>>> Get()
         {
 
-            var allTasks = await _context.Tasks.ToListAsync();
+            var allTasks = await _context.Tasks
+                                         .OrderBy(t => t.Id)
+                                         .ToListAsync();
 
             if (allTasks == null || allTasks.Count == 0)
                 return NotFound();
@@ -55,7 +58,7 @@ namespace taskAPI.Controllers
         {
             await _context.Tasks.AddAsync(task);
             await _context.SaveChangesAsync();
-            return Ok(task);
+            return CreatedAtAction(nameof(Get), new { id = task.Id }, task);
         }
 
         [HttpDelete]
@@ -63,7 +66,7 @@ namespace taskAPI.Controllers
         {
             _context.Tasks.Remove(task);
             await _context.SaveChangesAsync();
-            return Ok();
+            return NoContent();
         }
 
         [HttpDelete("{id:int}")]
@@ -77,7 +80,7 @@ namespace taskAPI.Controllers
             _context.Tasks.Remove(task);
             await _context.SaveChangesAsync();
 
-            return Ok();
+            return NoContent();
         }
 
         //GET api/tasks/test
