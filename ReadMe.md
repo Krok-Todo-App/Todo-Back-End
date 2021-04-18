@@ -3,18 +3,15 @@
 **Prerequisites**
 1. dotnet SDK
 [Installation guide here](https://docs.microsoft.com/en-us/dotnet/core/install/linux)
-2. dotnet-ef tool
-3. docker
-4. docker-compose
-5. web-server to configure reverse proxy (nginx as example)
+2. docker
+3. docker-compose
+4. web-server to configure reverse proxy (nginx as example)
 
 **Setup Guide:**
 1. Clone repository code to your desired location via `git clone https://github.com/Krok-Todo-App/Todo-Back-End`
 2. Go to src direcory `cd src/`
 3. Restore packages via `dotnet restore`
 4. Run `sudo docker-compose up --build -d`
-5. Run `dotnet ef migrations add Initial`
-6. Run `dotnet ef database update`
 
 > Your app is now ready, but it needs to be configured with nginx web-server
 You can refer to [this](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/linux-nginx?view=aspnetcore-5.0) article, but short instructions are listed below:
