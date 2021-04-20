@@ -14,6 +14,11 @@ using Microsoft.OpenApi.Models;
 using taskAPI.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.HttpOverrides;
+using taskAPI.Configuration;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Identity;
 
 namespace taskAPI
 {
@@ -29,6 +34,8 @@ namespace taskAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<JwtConfig>(Configuration.GetSection("JwtConfig"));
+
             services.AddCors(options =>
             {
                 options.AddPolicy(name: "allowCORS",
@@ -39,6 +46,32 @@ namespace taskAPI
                                          .AllowAnyMethod();
                               });
             });
+
+            // within this section we are configuring the authentication and setting the default scheme
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(jwt =>
+            {
+                var key = Encoding.ASCII.GetBytes(Configuration["JwtConfig:Secret"]);
+
+                jwt.SaveToken = true;
+                jwt.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true, // this will validate the 3rd part of the jwt token using the secret that we added in the appsettings and verify we have generated the jwt token
+        IssuerSigningKey = new SymmetricSecurityKey(key), // Add the secret key to our Jwt encryption
+        ValidateIssuer = false,
+                    ValidateAudience = false,
+                    RequireExpirationTime = false,
+                    ValidateLifetime = true
+                };
+            });
+
+            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddEntityFrameworkStores<ToDoContext>();
 
 
             services.AddDbContext<ToDoContext>(options =>
@@ -67,8 +100,6 @@ namespace taskAPI
                 {
                     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
                 });
-
-                app.UseAuthentication();
             }
 
             app.UseSwagger();
@@ -79,6 +110,8 @@ namespace taskAPI
             app.UseCors("allowCORS");
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

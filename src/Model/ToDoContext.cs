@@ -1,10 +1,11 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace taskAPI.Model
 {
-    public class ToDoContext : DbContext
+    public class ToDoContext : IdentityDbContext
     {
         public const string SchemaName = "public";
         public ToDoContext(DbContextOptions<ToDoContext> options): base(options){}
