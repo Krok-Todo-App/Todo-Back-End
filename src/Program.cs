@@ -33,6 +33,8 @@ namespace taskAPI
                 .ConfigureAppConfiguration((context, builder) =>
                 {
                     var env = context.HostingEnvironment.EnvironmentName;
+                    builder.AddJsonFile("jwtconfig.json", false, true);
+                    builder.AddEnvironmentVariables();
                 })
                 .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
     }
