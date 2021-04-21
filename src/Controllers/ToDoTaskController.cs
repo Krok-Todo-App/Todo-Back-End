@@ -45,7 +45,7 @@ namespace taskAPI.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<IEnumerable<ToDoTask>>> Get(int id)
         {
-            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var user = await _userManager.GetUserAsync(User);
             var task = await _context.Tasks
                                      .Where(t => t.User == user)
                                      .Include(t => t.User)
@@ -61,6 +61,9 @@ namespace taskAPI.Controllers
         [HttpPut]
         public async Task<ActionResult<ToDoTask>> Put([FromBody] ToDoTask task)
         {
+            if(task.User == null)
+                return BadRequest("User not supplied");
+
             _context.Entry(task).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return Ok(task);
@@ -69,7 +72,7 @@ namespace taskAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<ToDoTask>> Post([FromBody] ToDoTask task)
         {
-            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var user = await _userManager.GetUserAsync(User);
             task.User = user;
             await _context.Tasks.AddAsync(task);
             await _context.SaveChangesAsync();
@@ -79,7 +82,7 @@ namespace taskAPI.Controllers
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var user = await _userManager.GetUserAsync(User);
 
             var task = await _context.Tasks
                                      .Where(t => t.User == user)
