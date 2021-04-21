@@ -70,8 +70,11 @@ namespace taskAPI
                 };
             });
 
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ToDoContext>();
+            services.AddDefaultIdentity<IdentityUser>(options =>
+             {
+                 options.SignIn.RequireConfirmedAccount = true;
+                 options.ClaimsIdentity.UserIdClaimType = "Id";
+             }).AddEntityFrameworkStores<ToDoContext>();
 
 
             services.AddDbContext<ToDoContext>(options =>

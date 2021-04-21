@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Diagnostics;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using taskAPI.Model;
@@ -6,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 
 namespace taskAPI.Controllers
 {
@@ -14,10 +16,12 @@ namespace taskAPI.Controllers
     [Route("api/[controller]")]
     public class TasksController : ControllerBase
     {
+        private UserManager<IdentityUser> _userManager;
         private readonly ToDoContext _context;
-        public TasksController(ToDoContext context)
+        public TasksController(ToDoContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         //GET api/tasks/
@@ -25,7 +29,10 @@ namespace taskAPI.Controllers
         public async Task<ActionResult<IEnumerable<ToDoTask>>> Get()
         {
 
+            var user = await _userManager.GetUserAsync(User);
             var allTasks = await _context.Tasks
+                                         .Where(t => t.User == user)
+                                         .Include(t => t.User)
                                          .OrderBy(t => t.Id)
                                          .ToListAsync();
 
@@ -38,8 +45,11 @@ namespace taskAPI.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<IEnumerable<ToDoTask>>> Get(int id)
         {
-
-            var task = await _context.Tasks.FindAsync(id);
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var task = await _context.Tasks
+                                     .Where(t => t.User == user)
+                                     .Include(t => t.User)
+                                     .FirstAsync(t => t.Id == id);
 
             if (task == null)
                 return NotFound(id);
@@ -59,23 +69,21 @@ namespace taskAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<ToDoTask>> Post([FromBody] ToDoTask task)
         {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            task.User = user;
             await _context.Tasks.AddAsync(task);
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(Get), new { id = task.Id }, task);
         }
 
-        [HttpDelete]
-        public async Task<ActionResult> Delete([FromBody] ToDoTask task)
-        {
-            _context.Tasks.Remove(task);
-            await _context.SaveChangesAsync();
-            return NoContent();
-        }
-
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var task = await _context.Tasks.FindAsync(id);
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            var task = await _context.Tasks
+                                     .Where(t => t.User == user)
+                                     .FirstAsync(t => t.Id == id);
 
             if (task == null)
                 return NotFound(id);

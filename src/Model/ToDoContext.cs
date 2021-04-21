@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -15,6 +16,7 @@ namespace taskAPI.Model
 
         [Key]
         public int Id {get;init;}
+        public IdentityUser User {get;set;}
         public bool completed {get;set;} = false;
 
         [Required, MaxLength(300)]
