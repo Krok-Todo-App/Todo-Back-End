@@ -5,7 +5,7 @@
 [Installation guide here](https://docs.microsoft.com/en-us/dotnet/core/install/linux)
 2. docker
 3. docker-compose
-4. web-server to configure reverse proxy (nginx as example)
+4. web-server to configure reverse proxy (nginx is used as example)
 
 **Setup Guide:**
 1. Clone repository code to your desired location via `git clone https://github.com/Krok-Todo-App/Todo-Back-End`
