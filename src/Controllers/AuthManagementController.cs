@@ -58,6 +58,7 @@ namespace taskAPI.Controllers
 
                     return Ok(new RegistrationResponse()
                     {
+                        User = existingUser,
                         Result = true,
                         Token = jwtToken
                     });
@@ -114,6 +115,7 @@ namespace taskAPI.Controllers
 
                     return Ok(new RegistrationResponse()
                     {
+                        User = newUser,
                         Result = true,
                         Token = jwtToken
                     });
@@ -139,7 +141,7 @@ namespace taskAPI.Controllers
 
         private string GenerateJwtToken(IdentityUser user)
         {
-            // Now its ime to define the jwt token which will be responsible of creating our tokens
+            // Now its time to define the jwt token which will be responsible of creating our tokens
             var jwtTokenHandler = new JwtSecurityTokenHandler();
 
             // We get our secret from the appsettings
